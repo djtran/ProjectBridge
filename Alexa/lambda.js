@@ -12,6 +12,10 @@
 
 // --------------- Helpers that build all of the responses -----------------------
 
+var queueURL = "https://sqs.us-east-1.amazonaws.com/755552506636/BridgeInvasionQueue.fifo"
+var AWS = require('aws-sdk');
+var sqs = new AWS.SQS({region : 'us-east-1'});
+
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
@@ -80,7 +84,7 @@ function advance(intent, session, callback) {
 
     if (botNameSlot) {
         const botName = botNameSlot.value;
-        speechOutput = '${botName} is now advancing.'
+        speechOutput = botName + ' is now advancing.'
         repromptText = "Test Reprompt";
     } else {
         speechOutput = "I don't recognize that bot name";
@@ -104,7 +108,7 @@ function fire(intent, session, callback) {
         if (targetSlot) {
             const botName = botNameSlot.value;
             const target = targetSlot.value;
-            speechOutput = '${botName} is now firing at ${target}'
+            speechOutput = botName + ' is now firing at ' + target
             repromptText = "Test Reprompt";
         } else {
             speechOutput = "I don't recognize that target";
@@ -129,8 +133,27 @@ function takeCover(intent, session, callback) {
 
     if (botNameSlot) {
         const botName = botNameSlot.value;
-        speechOutput = '${botName} is now taking cover.'
+        speechOutput = botName + ' is now taking cover.'
         repromptText = "Test Reprompt";
+
+        var ts = Math.round((new Date()).getTime() / 1000);
+
+        var params = {
+            MessageBody: "Best Game" + botName,
+            MessageGroupId: "1",
+            MessageDeduplicationId: ts.toString(),
+            QueueUrl: queueURL,
+            DelaySeconds: 0
+        };
+
+        sqs.sendMessage(params, function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.log(data);
+            }
+        });
+
     } else {
         speechOutput = "I don't recognize that bot name";
         repromptText = "Test Reprompt"
