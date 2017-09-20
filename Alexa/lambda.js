@@ -12,6 +12,10 @@
 
 // --------------- Helpers that build all of the responses -----------------------
 
+var queueURL = "https://sqs.us-east-1.amazonaws.com/755552506636/BridgeInvasionQueue.fifo"
+var AWS = require('aws-sdk');
+var sqs = new AWS.SQS({region : 'us-east-1'});
+
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
         outputSpeech: {
@@ -131,6 +135,21 @@ function takeCover(intent, session, callback) {
         const botName = botNameSlot.value;
         speechOutput = botName + ' is now taking cover.'
         repromptText = "Test Reprompt";
+
+        var params = {
+            MessageBody: "Best Game",
+            QueueUrl: queueURL,
+            DelaySeconds: 0
+        };
+
+        sqs.sendMessage(params function(err, data) {
+            if (err) {
+                console.log(err);
+            } else {
+                console.logg(data);
+            }
+        });
+
     } else {
         speechOutput = "I don't recognize that bot name";
         repromptText = "Test Reprompt"
