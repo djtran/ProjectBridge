@@ -8,7 +8,6 @@ public class ObjectLabel : MonoBehaviour {
     public string name;
 
     GameObject label;
-    Camera camToUse = Camera.main;
 
     // Use this for initialization
     void Start () {
