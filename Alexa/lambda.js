@@ -142,7 +142,7 @@ function takeCover(intent, session, callback) {
             DelaySeconds: 0
         };
 
-        sqs.sendMessage(params function(err, data) {
+        sqs.sendMessage(params, function(err, data) {
             if (err) {
                 console.log(err);
             } else {
