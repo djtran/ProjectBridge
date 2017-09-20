@@ -80,7 +80,7 @@ function advance(intent, session, callback) {
 
     if (botNameSlot) {
         const botName = botNameSlot.value;
-        speechOutput = '${botName} is now advancing.'
+        speechOutput = botName + ' is now advancing.'
         repromptText = "Test Reprompt";
     } else {
         speechOutput = "I don't recognize that bot name";
@@ -104,7 +104,7 @@ function fire(intent, session, callback) {
         if (targetSlot) {
             const botName = botNameSlot.value;
             const target = targetSlot.value;
-            speechOutput = '${botName} is now firing at ${target}'
+            speechOutput = botName + ' is now firing at ' + target
             repromptText = "Test Reprompt";
         } else {
             speechOutput = "I don't recognize that target";
@@ -129,7 +129,7 @@ function takeCover(intent, session, callback) {
 
     if (botNameSlot) {
         const botName = botNameSlot.value;
-        speechOutput = '${botName} is now taking cover.'
+        speechOutput = botName + ' is now taking cover.'
         repromptText = "Test Reprompt";
     } else {
         speechOutput = "I don't recognize that bot name";
