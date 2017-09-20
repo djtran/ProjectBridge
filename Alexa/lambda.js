@@ -136,8 +136,12 @@ function takeCover(intent, session, callback) {
         speechOutput = botName + ' is now taking cover.'
         repromptText = "Test Reprompt";
 
+        var ts = Math.round((new Date()).getTime() / 1000);
+
         var params = {
-            MessageBody: "Best Game",
+            MessageBody: "Best Game" + botName,
+            MessageGroupId: "1",
+            MessageDeduplicationId: ts.toString(),
             QueueUrl: queueURL,
             DelaySeconds: 0
         };
@@ -146,7 +150,7 @@ function takeCover(intent, session, callback) {
             if (err) {
                 console.log(err);
             } else {
-                console.logg(data);
+                console.log(data);
             }
         });
 
