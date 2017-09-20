@@ -48,12 +48,10 @@ function getWelcomeResponse(callback) {
     // If we wanted to initialize the session to have some attributes we could add those here.
     const sessionAttributes = {};
     const cardTitle = 'Welcome';
-    const speechOutput = 'Welcome to the Alexa Skills Kit sample. ' +
-        'Please tell me your favorite color by saying, my favorite color is red';
+    const speechOutput = 'Welcome to Bridge Invasion';
     // If the user either does not reply to the welcome message or says something that is not
     // understood, they will be prompted again with this text.
-    const repromptText = 'Please tell me your favorite color by saying, ' +
-        'my favorite color is red';
+    const repromptText = 'I did not understand. Please try again.';
     const shouldEndSession = false;
 
     callback(sessionAttributes,
@@ -62,70 +60,84 @@ function getWelcomeResponse(callback) {
 
 function handleSessionEndRequest(callback) {
     const cardTitle = 'Session Ended';
-    const speechOutput = 'Thank you for trying the Alexa Skills Kit sample. Have a nice day!';
+    const speechOutput = 'Thank you for playing Bridge Invasion';
     // Setting this to true ends the session and exits the skill.
     const shouldEndSession = true;
 
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
-function createFavoriteColorAttributes(favoriteColor) {
-    return {
-        favoriteColor,
-    };
-}
-
 /**
  * Sets the color in the session and prepares the speech to reply to the user.
  */
-function setColorInSession(intent, session, callback) {
+function advance(intent, session, callback) {
     const cardTitle = intent.name;
-    const favoriteColorSlot = intent.slots.Color;
+    const botNameSlot = intent.slots.BotName;
     let repromptText = '';
     let sessionAttributes = {};
     const shouldEndSession = false;
     let speechOutput = '';
 
-    if (favoriteColorSlot) {
-        const favoriteColor = favoriteColorSlot.value;
-        sessionAttributes = createFavoriteColorAttributes(favoriteColor);
-        speechOutput = `I now know your favorite color is ${favoriteColor}. You can ask me ` +
-            "your favorite color by saying, what's my favorite color?";
-        repromptText = "You can ask me your favorite color by saying, what's my favorite color?";
+    if (botNameSlot) {
+        const botName = botNameSlot.value;
+        speechOutput = '${botName} is now advancing.'
+        repromptText = "Test Reprompt";
     } else {
-        speechOutput = "I'm not sure what your favorite color is. Please try again.";
-        repromptText = "I'm not sure what your favorite color is. You can tell me your " +
-            'favorite color by saying, my favorite color is red';
+        speechOutput = "I don't recognize that bot name";
+        repromptText = "Test Reprompt"
     }
 
     callback(sessionAttributes,
          buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
-function getColorFromSession(intent, session, callback) {
-    let favoriteColor;
-    const repromptText = null;
-    const sessionAttributes = {};
-    let shouldEndSession = false;
+function fire(intent, session, callback) {
+    const cardTitle = intent.name;
+    const botNameSlot = intent.slots.BotName;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
     let speechOutput = '';
 
-    if (session.attributes) {
-        favoriteColor = session.attributes.favoriteColor;
-    }
-
-    if (favoriteColor) {
-        speechOutput = `Your favorite color is ${favoriteColor}. Goodbye.`;
-        shouldEndSession = true;
+    if (botNameSlot) {
+        const targetSlot = intent.slots.Target;
+        if (targetSlot) {
+            const botName = botNameSlot.value;
+            const target = targetSlot.value;
+            speechOutput = '${botName} is now firing at ${target}'
+            repromptText = "Test Reprompt";
+        } else {
+            speechOutput = "I don't recognize that target";
+            repromptText = "Test Reprompt"
+        }
     } else {
-        speechOutput = "I'm not sure what your favorite color is, you can say, my favorite color " +
-            ' is red';
+        speechOutput = "I don't recognize that bot name";
+        repromptText = "Test Reprompt"
     }
 
-    // Setting repromptText to null signifies that we do not want to reprompt the user.
-    // If the user does not respond or says something that is not understood, the session
-    // will end.
     callback(sessionAttributes,
-         buildSpeechletResponse(intent.name, speechOutput, repromptText, shouldEndSession));
+         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
+function takeCover(intent, session, callback) {
+    const cardTitle = intent.name;
+    const botNameSlot = intent.slots.BotName;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
+    let speechOutput = '';
+
+    if (botNameSlot) {
+        const botName = botNameSlot.value;
+        speechOutput = '${botName} is now taking cover.'
+        repromptText = "Test Reprompt";
+    } else {
+        speechOutput = "I don't recognize that bot name";
+        repromptText = "Test Reprompt"
+    }
+
+    callback(sessionAttributes,
+         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 
@@ -158,10 +170,12 @@ function onIntent(intentRequest, session, callback) {
     const intentName = intentRequest.intent.name;
 
     // Dispatch to your skill's intent handlers
-    if (intentName === 'MyColorIsIntent') {
-        setColorInSession(intent, session, callback);
-    } else if (intentName === 'WhatsMyColorIntent') {
-        getColorFromSession(intent, session, callback);
+    if (intentName === 'AdvanceIntent') {
+        advance(intent, session, callback);
+    } else if (intentName === 'FireIntent') {
+        fire(intent, session, callback);
+    } else if (intentName === 'TakeCoverIntent') {
+        takeCover(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
