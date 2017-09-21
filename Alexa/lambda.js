@@ -17,6 +17,9 @@ var AWS = require('aws-sdk');
 var sqs = new AWS.SQS({region : 'us-east-1'});
 var BOT_NAMES = ['david', 'wiley'];
 var TARGET_NAMES = ['mike' , 'wallace', 'barbara', 'jessica', 'phillip', 'jeff'];
+var ADVANCE_SPEECH = ['Affirmative', 'I am on it', 'Got it']
+var FIRE_SPEECH = ['Target confirmed ', 'Firing at ', 'Consider it done']
+var TAKE_COVER_SPEECH = ['Falling back', 'I\'m retreating', 'I\'m out of here']
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
@@ -87,6 +90,12 @@ function sendSQSMessage(message) {
     });
 }
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min)) + min; //The maximum is exclusive and the minimum is inclusive
+}
+
 /**
  * Sets the color in the session and prepares the speech to reply to the user.
  */
@@ -101,7 +110,7 @@ function advance(intent, session, callback) {
     if (botNameSlot) {
         const botName = botNameSlot.value;
         if (BOT_NAMES.indexOf(botName.toLowerCase()) > -1) {
-            speechOutput = botName + ' is now advancing.'
+            speechOutput = ADVANCE_SPEECH[getRandomInt(0 , 3)];
             repromptText = "Test Reprompt";
             sendSQSMessage(botName + " advance");
         }
@@ -129,7 +138,13 @@ function fire(intent, session, callback) {
         const botName = botNameSlot.value;
         const target = targetSlot.value;
         if (BOT_NAMES.indexOf(botName.toLowerCase()) > -1 && TARGET_NAMES.indexOf(target.toLowerCase()) > -1) {
-            speechOutput = botName + ' is now firing at ' + target
+            var randInt = getRandomInt(0, 3);
+            speechOutput = FIRE_SPEECH[randInt];
+
+            if (randInt != 2) {
+                speechOutput += target
+            }
+
             repromptText = "Test Reprompt";
 
             sendSQSMessage(botName + " fire " + target);
@@ -157,7 +172,7 @@ function takeCover(intent, session, callback) {
     if (botNameSlot) {
         const botName = botNameSlot.value;
         if (BOT_NAMES.indexOf(botName.toLowerCase()) > -1) {
-            speechOutput = botName + ' is now taking cover.'
+            speechOutput = TAKE_COVER_SPEECH[getRandomInt(0, 3)];
             repromptText = "Test Reprompt";
 
             sendSQSMessage(botName + " takeCover");
