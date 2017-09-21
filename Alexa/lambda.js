@@ -16,7 +16,7 @@ var queueURL = "https://sqs.us-east-1.amazonaws.com/755552506636/BridgeInvasionQ
 var AWS = require('aws-sdk');
 var sqs = new AWS.SQS({region : 'us-east-1'});
 var BOT_NAMES = ['david', 'wiley'];
-var TARGET_NAMES = ['mike' , 'wallace', 'barbara', 'jessica', 'phillip', 'jeff'];
+var TARGET_NAMES = ['mike' , 'wallace', 'barbara', 'jessica', 'philip', 'jeff'];
 var ADVANCE_SPEECH = ['Affirmative', 'I am on it', 'Got it']
 var FIRE_SPEECH = ['Target confirmed ', 'Firing at ', 'Consider it done']
 var TAKE_COVER_SPEECH = ['Falling back', 'I\'m retreating', 'I\'m out of here']
@@ -125,6 +125,18 @@ function advance(intent, session, callback) {
         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
+function allAdvance(intent, session, callback) {
+    const cardTitle = intent.name;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
+    let speechOutput = '';
+
+    speechOutput = "All advancing"
+    sendSQSMessage("all advance");
+    callback(sessionAttributes,
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
 function fire(intent, session, callback) {
     const cardTitle = intent.name;
     const botNameSlot = intent.slots.BotName;
@@ -161,6 +173,32 @@ function fire(intent, session, callback) {
         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
+function allFire(intent, session, callback) {
+    const cardTitle = intent.name;
+    const targetSlot = intent.slots.Target;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
+    let speechOutput = '';
+
+    if (targetSlot) {
+        const target = targetSlot.value;
+        if (TARGET_NAMES.indexOf(target.toLowerCase()) > -1) {
+            speechOutput = "All firing"
+            sendSQSMessage("all fire " + target);
+        }
+        else{
+            speechOutput = 'Who is ' + target;
+        }
+    }
+    else {
+        speechOutput = 'Please use an American name';
+    }
+
+    callback(sessionAttributes,
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
+
 function takeCover(intent, session, callback) {
     const cardTitle = intent.name;
     const botNameSlot = intent.slots.BotName;
@@ -188,6 +226,18 @@ function takeCover(intent, session, callback) {
         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
+function allTakeCover(intent, session, callback) {
+    const cardTitle = intent.name;
+    let repromptText = '';
+    let sessionAttributes = {};
+    const shouldEndSession = false;
+    let speechOutput = '';
+
+    speechOutput = "All retreating"
+    sendSQSMessage("all takeCover");
+    callback(sessionAttributes,
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+}
 
 // --------------- Events -----------------------
 
@@ -224,6 +274,12 @@ function onIntent(intentRequest, session, callback) {
         fire(intent, session, callback);
     } else if (intentName === 'TakeCoverIntent') {
         takeCover(intent, session, callback);
+    } else if (intentName === 'AllAdvanceIntent') {
+        allAdvance(intent, session, callback);
+    } else if (intentName === 'AllFireIntent') {
+        allFire(intent, session, callback);
+    } else if (intentName === 'AllTakeCoverIntent') {
+        allTakeCover(intent, session, callback);
     } else if (intentName === 'AMAZON.HelpIntent') {
         getWelcomeResponse(callback);
     } else if (intentName === 'AMAZON.StopIntent' || intentName === 'AMAZON.CancelIntent') {
