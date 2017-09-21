@@ -11,11 +11,11 @@ public class CompanionAbilities : MonoBehaviour {
     public float attackDistance = 25.0f;
 
     private float slerpModifier = 5.0f;
-    private Transform currentTarget;
-    private ArrayList targetableEnemies;
+    public GameObject currentTarget;
+    public ArrayList targetableEnemies;
     private SphereCollider detectRadius;
-    private int state = 0;
-    private string targetName;
+    public int state = 0;
+    public string targetName;
     private DistanceComparer distanceComparer;
 
     //Navigation
@@ -29,6 +29,7 @@ public class CompanionAbilities : MonoBehaviour {
         targetableEnemies = new ArrayList();
         distanceComparer = new DistanceComparer();
         distanceComparer.originator = this.gameObject;
+        agent = GetComponent<NavMeshAgent>();
         
         if(_instances == null)
         {
@@ -39,6 +40,10 @@ public class CompanionAbilities : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+        if(currentTarget == null)
+        {
+            state = 0;
+        }
         switch (state)
         {
             case 1:
@@ -48,7 +53,7 @@ public class CompanionAbilities : MonoBehaviour {
                 retreat();
                 break;
             case 3:
-                focusTarget(targetName);
+                focusTarget();
                 break;
             default:
                 defendPosition();
@@ -62,7 +67,7 @@ public class CompanionAbilities : MonoBehaviour {
         string[] commandList = command.Split(' ');
         targetName = null;
 
-        switch (commandList[0])
+        switch (commandList[1])
         {
             case "advance":
                 state = 1;
@@ -72,7 +77,14 @@ public class CompanionAbilities : MonoBehaviour {
                 break;
             case "fire":
                 state = 3;
-                targetName = commandList[1];
+                targetName = commandList[2];
+                foreach (GameObject target in targetableEnemies)
+                {
+                    if (target.GetComponent<ObjectLabel>().name == targetName || target.GetComponent<ObjectLabel>().name.Equals(targetName))
+                    {
+                        currentTarget = target;
+                    }
+                }
                 break;
             default:
                 state = 0;
@@ -113,16 +125,19 @@ public class CompanionAbilities : MonoBehaviour {
             while (i < targetableEnemies.Capacity)
             {
                 target = (GameObject)targetableEnemies[i];
-                if (target.GetComponent<PlayerController>() == null)
-                {
-                    break;
-                }
-                else
+                if (target.GetComponent<PlayerController>() != null)
                 {
                     i++;
+                    continue;
                 }
+                else if (target.GetComponent<CompanionAbilities>() != null)
+                {
+                    i++;
+                    continue;
+                }
+                break;
             }
-            currentTarget = target.transform;
+            currentTarget = target;
             attackTarget();
         }
     }
@@ -132,66 +147,73 @@ public class CompanionAbilities : MonoBehaviour {
 		Debug.Log ("Advancing");
         if (currentTarget != null)
         {
-            if (attackDistance > Vector3.Distance(this.transform.position, currentTarget.position))
+            if (!lineOfSight(currentTarget.transform) && attackDistance < Vector3.Distance(this.transform.position, currentTarget.transform.position))
             {
-                agent.SetDestination(currentTarget.position);
+                agent.SetDestination(currentTarget.transform.position);
+                agent.isStopped = false;
+                targetName = currentTarget.GetComponent<ObjectLabel>().name;
             }
             else
             {
-                agent.Stop();
+                agent.isStopped = true;
                 state = 3;
+                foreach (GameObject target in targetableEnemies)
+                {
+                    if (target.GetComponent<ObjectLabel>().name == targetName || target.GetComponent<ObjectLabel>().name.Equals(targetName))
+                    {
+                        currentTarget = target;
+                    }
+                }
             }
         }
         else
         {
-            agent.SetDestination(endPoint.transform.position);
+            agent.SetDestination(endPoint.position);
+            agent.isStopped = false;
         }
 
     }
 
     void retreat()
     {
-        if (currentTarget == null)
-        {
-            agent.SetDestination(startPoint.transform.position);
-        }
-        else
-        {
-            agent.SetDestination((transform.position-currentTarget.position).normalized*15.0f);
-        }
+        agent.SetDestination(startPoint.position);
+        agent.isStopped = false;
+
+        StartCoroutine("Stop");
     }
 
-    void focusTarget(string targetName)
+    IEnumerator Stop()
+    {
+        yield return new WaitForSeconds(10);
+
+        agent.isStopped = true;
+        state = 0;
+    }
+
+    void focusTarget()
     {
 
         if(currentTarget == null)
         {
+            targetableEnemies.Clear();
             state = 0;
             return;
         }
-
-        foreach (GameObject target in targetableEnemies)
-        {
-            if(target.GetComponent<ObjectLabel>().name == targetName || target.GetComponent<ObjectLabel>().name.Equals(targetName))
-            {
-                currentTarget = target.transform;
-            }
-        }
-
-        if (attackDistance > Vector3.Distance(this.transform.position, currentTarget.position))
-        {
-            agent.SetDestination(currentTarget.position);
-        }
-        else
-        {
-            attackTarget();
-        }
+        attackTarget();
     }
 
     void attackTarget()
     {
-        lookAtPlayer(currentTarget);
-        shootPlayer(currentTarget);
+        if (!lineOfSight(currentTarget.transform) && attackDistance < Vector3.Distance(this.transform.position, currentTarget.transform.position))
+        {
+            agent.SetDestination(currentTarget.transform.position);
+            agent.isStopped = false;
+        }
+        else
+        {
+            lookAtPlayer(currentTarget.transform);
+            shootPlayer(currentTarget.transform);
+        }
     }
 
     void lookAtPlayer(Transform fpsTarget)
@@ -211,5 +233,16 @@ public class CompanionAbilities : MonoBehaviour {
                 gunController.Shoot();
             }
         }
+    }
+
+    bool lineOfSight(Transform fpsTarget)
+    {
+        RaycastHit hit;
+        Physics.Raycast(transform.position, fpsTarget.position - transform.position, out hit);
+        if(hit.collider.gameObject.GetComponent<ObjectLabel>() != null)
+        {
+            return true;
+        }
+        return false;
     }
 }

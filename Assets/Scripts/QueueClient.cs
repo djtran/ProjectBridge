@@ -44,9 +44,17 @@ public class QueueClient : MonoBehaviour {
 								//Process Commands Here
 								Debug.Log(@"Message Id  = " + m.MessageId);
 								Debug.Log(@"Message = " + m.Body);
+                                string[] command = m.Body.Split(' ');
 
-								string command = m.Body.Substring(m.Body.IndexOf(' ') + 1);
-								CompanionAbilities._instances[0].receiveCommand(command);
+                                var companions = CompanionAbilities._instances;
+
+                                foreach (var companion in companions)
+                                {
+                                    if(companion.gameObject.GetComponent<ObjectLabel>().name == command[0])
+                                    {
+                                        companion.receiveCommand(m.Body);
+                                    }
+                                }
 								//Deleting Message 
 								deleteMessage(m.ReceiptHandle);
 							});
