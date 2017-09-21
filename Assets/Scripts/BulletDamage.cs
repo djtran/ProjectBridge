@@ -5,6 +5,7 @@ using UnityEngine;
 public class BulletDamage : MonoBehaviour {
 
     public float damageOnHit = 1.0f;
+    public GameObject explosionPrefab;
 	
 	// Update is called once per frame
 	void Update () {
@@ -18,7 +19,6 @@ public class BulletDamage : MonoBehaviour {
         {
             opponentStats.anyDamage(damageOnHit);
         }
-
         Destroy(this.gameObject);
     }
 

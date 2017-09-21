@@ -337,10 +337,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4012bd58079fbec4baed0c3603669bdf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  explosionPrefab: {fileID: 100010, guid: 031d08f52af1daa4f929b85221519426, type: 2}
   healthbarPrefab: {fileID: 1394797845306886, guid: 22cafeaa4833e0448822649c087b1738,
     type: 2}
   healthMax: 10
   recover1HPCooldown: 2.5
+  dead: 0
+  upDistance: 1
 --- !u!114 &114356107903035092
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -353,6 +356,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   movementSpd: 5
+  dead: 0
 --- !u!114 &114458175289189284
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -382,7 +386,7 @@ MonoBehaviour:
   bulletPrefab: {fileID: 1434963863335720, guid: d06a862db4b50734d98f41124f5781dc,
     type: 2}
   coolDownInSeconds: 0.2
-  damage: 3
+  damage: 1
 --- !u!114 &114640800288347438
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -397,6 +401,7 @@ MonoBehaviour:
   labelPrefab: {fileID: 1986277448743776, guid: df1705be9d49a6f428680978b36f9dd1,
     type: 2}
   name: Konstantinos
+  upDistance: 1
 --- !u!124 &124578066816230578
 Behaviour:
   m_ObjectHideFlags: 1

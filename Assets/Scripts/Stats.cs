@@ -5,6 +5,8 @@ using UnityEngine.UI;
 
 public class Stats : MonoBehaviour {
 
+    public GameObject smokePrefab;
+    public GameObject explosionPrefab;
     public GameObject healthbarPrefab;
     public float healthMax = 10.0f;
     public float recover1HPCooldown = 2.5f;
@@ -13,6 +15,8 @@ public class Stats : MonoBehaviour {
 
     private GameObject healthbar;
     private float health;
+    private GameObject smoke;
+    private GameObject explode;
     
     // Use this for initialization
     void Start () {
@@ -36,7 +40,13 @@ public class Stats : MonoBehaviour {
         if (health == 0.0f)
         {
             GetComponent<ObjectLabel>().setDead();
+            if(!dead)
+            {
+                explode = Instantiate(explosionPrefab, transform);
+                smoke = Instantiate(smokePrefab, transform);
+            }
             dead = true;
+
 
             if (GetComponent<AIStateMachine>())
             {
