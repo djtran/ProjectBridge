@@ -24,6 +24,9 @@ public class BossAI : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
+		if (fpsTarget == null) {
+			return;
+		}
 		fpsTargetDistance = Vector3.Distance(fpsTarget.position, transform.position);
 		if (fpsTargetDistance < enemyLookDistance)
 		{
