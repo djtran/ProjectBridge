@@ -6,7 +6,7 @@ public class ObjectLabel : MonoBehaviour {
 
     public GameObject labelPrefab;
     public string name;
-
+	public float upDistance = 1.0f;
     GameObject label;
 
     // Use this for initialization
@@ -17,6 +17,6 @@ public class ObjectLabel : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        label.transform.SetPositionAndRotation(transform.position + Vector3.up, Quaternion.Euler(30.0f, 0.0f, 0.0f));
+		label.transform.SetPositionAndRotation(transform.position + Vector3.up * upDistance, Quaternion.Euler(30.0f, 0.0f, 0.0f));
 	}
 }

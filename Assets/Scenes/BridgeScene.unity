@@ -1697,6 +1697,7 @@ MonoBehaviour:
   labelPrefab: {fileID: 1986277448743776, guid: df1705be9d49a6f428680978b36f9dd1,
     type: 2}
   name: Jeff
+  upDistance: 2
 --- !u!1 &1319600244
 GameObject:
   m_ObjectHideFlags: 0
