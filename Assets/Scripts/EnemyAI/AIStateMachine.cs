@@ -10,7 +10,7 @@ public class AIStateMachine : MonoBehaviour {
     public Transform fpsTarget;
     public Vector3 gunOffset;
 
-    float slerpModifier = 1.5f;
+    float slerpModifier = 6.0f;
     Rigidbody AIBody;
     Renderer AIRender;
 
