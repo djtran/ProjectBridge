@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 114458175289189284}
   m_Layer: 0
   m_Name: User
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -82,7 +82,7 @@ GameObject:
   - component: {fileID: 54030667815943812}
   m_Layer: 0
   m_Name: Cube
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -396,7 +396,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   labelPrefab: {fileID: 1986277448743776, guid: df1705be9d49a6f428680978b36f9dd1,
     type: 2}
-  name: David
+  name: Konstantinos
 --- !u!124 &124578066816230578
 Behaviour:
   m_ObjectHideFlags: 1

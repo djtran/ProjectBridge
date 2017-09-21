@@ -14,7 +14,7 @@ public class AIStateMachine : MonoBehaviour {
     Rigidbody AIBody;
     Renderer AIRender;
 
-	// Use this for initialization
+	// Use this for initialization 
 	void Start () {
         AIRender = GetComponent<Renderer>();
         AIBody = GetComponent<Rigidbody>();
@@ -23,6 +23,10 @@ public class AIStateMachine : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
+		if (fpsTarget == null) {
+			return;
+		}
+
         fpsTargetDistance = Vector3.Distance(fpsTarget.position, transform.position);
         if (fpsTargetDistance < enemyLookDistance)
         {
