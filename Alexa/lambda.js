@@ -15,6 +15,8 @@
 var queueURL = "https://sqs.us-east-1.amazonaws.com/755552506636/BridgeInvasionQueue.fifo"
 var AWS = require('aws-sdk');
 var sqs = new AWS.SQS({region : 'us-east-1'});
+var BOT_NAMES = ['david', 'wiley'];
+var TARGET_NAMES = ['mike' , 'wallace', 'barbara', 'jessica', 'phillip'];
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
@@ -26,12 +28,6 @@ function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
             type: 'Simple',
             title: `SessionSpeechlet - ${title}`,
             content: `SessionSpeechlet - ${output}`,
-        },
-        reprompt: {
-            outputSpeech: {
-                type: 'PlainText',
-                text: repromptText,
-            },
         },
         shouldEndSession,
     };
@@ -104,47 +100,50 @@ function advance(intent, session, callback) {
 
     if (botNameSlot) {
         const botName = botNameSlot.value;
-        speechOutput = botName + ' is now advancing.'
-        repromptText = "Test Reprompt";
-
-        sendSQSMessage(botName + " advance");
-    } else {
-        speechOutput = "I don't recognize that bot name";
-        repromptText = "Test Reprompt"
+        if (BOT_NAMES.indexOf(botName.toLowerCase()) > -1) {
+            speechOutput = botName + ' is now advancing.'
+            repromptText = "Test Reprompt";
+            sendSQSMessage(botName + " advance");
+        }
+        else {
+            speechOutput = 'Who is ' + botName;
+        }
     }
-
+    else {
+        speechOutput = 'Please use an American name';
+    }
     callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 function fire(intent, session, callback) {
     const cardTitle = intent.name;
     const botNameSlot = intent.slots.BotName;
+    const targetSlot = intent.slots.Target;
     let repromptText = '';
     let sessionAttributes = {};
     const shouldEndSession = false;
     let speechOutput = '';
 
-    if (botNameSlot) {
-        const targetSlot = intent.slots.Target;
-        if (targetSlot) {
-            const botName = botNameSlot.value;
-            const target = targetSlot.value;
+    if (botNameSlot && targetSlot) {
+        const botName = botNameSlot.value;
+        const target = targetSlot.value;
+        if (BOT_NAMES.indexOf(botName.toLowerCase()) > -1 && TARGET_NAMES.indexOf(target.toLowerCase()) > -1) {
             speechOutput = botName + ' is now firing at ' + target
             repromptText = "Test Reprompt";
 
             sendSQSMessage(botName + " fire " + target);
-        } else {
-            speechOutput = "I don't recognize that target";
-            repromptText = "Test Reprompt"
-        }
-    } else {
-        speechOutput = "I don't recognize that bot name";
-        repromptText = "Test Reprompt"
-    }
+        } 
 
+        else {
+            speechOutput = 'Who are these people?';
+        }
+    } 
+    else {
+        speechOutput = 'Please use American names';
+    }
     callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 function takeCover(intent, session, callback) {
@@ -157,18 +156,21 @@ function takeCover(intent, session, callback) {
 
     if (botNameSlot) {
         const botName = botNameSlot.value;
-        speechOutput = botName + ' is now taking cover.'
-        repromptText = "Test Reprompt";
+        if (BOT_NAMES.indexOf(botName.toLowerCase()) > -1) {
+            speechOutput = botName + ' is now taking cover.'
+            repromptText = "Test Reprompt";
 
-        sendSQSMessage(botName + " takeCover");
-
-    } else {
-        speechOutput = "I don't recognize that bot name";
-        repromptText = "Test Reprompt"
+            sendSQSMessage(botName + " takeCover");
+        }
+        else {
+            speechOutput = 'Who is ' + botName;
+        }
     }
-
+    else {
+        speechOutput = 'Please use an American name';
+    }
     callback(sessionAttributes,
-         buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
+        buildSpeechletResponse(cardTitle, speechOutput, repromptText, shouldEndSession));
 }
 
 
