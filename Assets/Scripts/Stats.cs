@@ -8,6 +8,7 @@ public class Stats : MonoBehaviour {
     public GameObject healthbarPrefab;
     public float healthMax = 10.0f;
     public float recover1HPCooldown = 2.5f;
+    public bool dead = false;
 
     private GameObject healthbar;
     private float health;
@@ -33,7 +34,10 @@ public class Stats : MonoBehaviour {
 
         if (health == 0.0f)
         {
-            Destroy(this.gameObject, 0.0f);
+            dead = true;
+            this.gameObject.GetComponent<AIStateMachine>().enabled = false;
+            this.gameObject.GetComponent<PlayerController>().enabled = false;
+            this.gameObject.GetComponent<CompanionAbilities>().enabled = false;
         }
     }
 

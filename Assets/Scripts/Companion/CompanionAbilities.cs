@@ -125,6 +125,11 @@ public class CompanionAbilities : MonoBehaviour {
             while (i < targetableEnemies.Capacity)
             {
                 target = (GameObject)targetableEnemies[i];
+                if(target == null)
+                {
+                    i++;
+                    continue;
+                }
                 if (target.GetComponent<PlayerController>() != null)
                 {
                     i++;
@@ -138,7 +143,10 @@ public class CompanionAbilities : MonoBehaviour {
                 break;
             }
             currentTarget = target;
-            attackTarget();
+            if(Vector3.Distance(this.transform.position, target.transform.position) <= attackDistance)
+            {
+                attackTarget();
+            }
         }
     }
 
@@ -155,7 +163,6 @@ public class CompanionAbilities : MonoBehaviour {
             }
             else
             {
-                agent.isStopped = true;
                 state = 3;
                 foreach (GameObject target in targetableEnemies)
                 {

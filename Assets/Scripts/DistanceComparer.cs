@@ -13,6 +13,15 @@ public class DistanceComparer : IComparer {
         float distance1 = Vector3.Distance(originator.transform.position, first.transform.position);
         float distance2 = Vector3.Distance(originator.transform.position, second.transform.position);
 
+        if(first.GetComponent<Stats>().dead)
+        {
+            distance1 += 1000.0f;
+        }
+        if(second.GetComponent<Stats>().dead)
+        {
+            distance2 += 1000.0f;
+        }
+
         if(distance1 > distance2)
         {
             return 1;

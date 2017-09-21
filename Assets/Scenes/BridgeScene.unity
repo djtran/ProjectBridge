@@ -1036,6 +1036,7 @@ MonoBehaviour:
     type: 2}
   healthMax: 10
   recover1HPCooldown: 2.5
+  dead: 0
 --- !u!54 &914318203
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1955,6 +1956,11 @@ Prefab:
     - target: {fileID: 4969641257211044, guid: c3dc17519a1f5f343840e0bb6dbac8dc, type: 2}
       propertyPath: m_RootOrder
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 114620130970978564, guid: c3dc17519a1f5f343840e0bb6dbac8dc,
+        type: 2}
+      propertyPath: damage
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: c3dc17519a1f5f343840e0bb6dbac8dc, type: 2}

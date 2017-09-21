@@ -7,6 +7,7 @@ public class ObjectLabel : MonoBehaviour {
     public GameObject labelPrefab;
     public string name;
 	public float upDistance = 1.0f;
+
     GameObject label;
 
     // Use this for initialization
