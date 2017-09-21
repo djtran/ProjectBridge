@@ -16,7 +16,7 @@ var queueURL = "https://sqs.us-east-1.amazonaws.com/755552506636/BridgeInvasionQ
 var AWS = require('aws-sdk');
 var sqs = new AWS.SQS({region : 'us-east-1'});
 var BOT_NAMES = ['david', 'wiley'];
-var TARGET_NAMES = ['mike' , 'wallace', 'barbara', 'jessica', 'phillip'];
+var TARGET_NAMES = ['mike' , 'wallace', 'barbara', 'jessica', 'phillip', 'jeff'];
 
 function buildSpeechletResponse(title, output, repromptText, shouldEndSession) {
     return {
