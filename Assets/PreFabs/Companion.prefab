@@ -165,7 +165,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1559811919462336}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -14.6431875, y: 1.31, z: -69.52801}
+  m_LocalPosition: {x: 11.89, y: 1.31, z: -69.52801}
   m_LocalScale: {x: 1.25, y: 1.25, z: 1.25}
   m_Children:
   - {fileID: 4152463449019144}
@@ -395,6 +395,7 @@ MonoBehaviour:
   targetName: 
   startPoint: {fileID: 0}
   endPoint: {fileID: 0}
+  dead: 0
 --- !u!114 &114309451647165662
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -408,7 +409,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   labelPrefab: {fileID: 1986277448743776, guid: df1705be9d49a6f428680978b36f9dd1,
     type: 2}
-  name: David
+  name: Wiley
+  upDistance: 1
 --- !u!114 &114719029060912434
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -441,6 +443,8 @@ MonoBehaviour:
     type: 2}
   healthMax: 20
   recover1HPCooldown: 2.5
+  dead: 0
+  upDistance: 1
 --- !u!135 &135056789955729190
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -492,7 +496,7 @@ NavMeshAgent:
   m_Acceleration: 8
   avoidancePriority: 30
   m_AngularSpeed: 120
-  m_StoppingDistance: 10
+  m_StoppingDistance: 5
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 1
   m_AutoRepath: 1
