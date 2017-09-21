@@ -23,6 +23,8 @@ public class CompanionAbilities : MonoBehaviour {
     public Transform endPoint;
     private NavMeshAgent agent;
 
+    public bool dead = false;
+
 	// Use this for initialization
 	void Start () {
         detectRadius = GetComponentInChildren<SphereCollider>();
@@ -40,9 +42,20 @@ public class CompanionAbilities : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-        if(currentTarget == null)
+        if(dead)
         {
-            state = 0;
+            agent.isStopped = true;
+            Debug.Log("Dead companion");
+            return;
+        }
+        if (currentTarget != null)
+        {
+            if (currentTarget.GetComponent<Stats>().dead)
+            {
+                currentTarget = null;
+                state = 0;
+                agent.isStopped = false;
+            }
         }
         switch (state)
         {
@@ -77,10 +90,10 @@ public class CompanionAbilities : MonoBehaviour {
                 break;
             case "fire":
                 state = 3;
-                targetName = commandList[2];
+                targetName = commandList[2].ToLower();
                 foreach (GameObject target in targetableEnemies)
                 {
-                    if (target.GetComponent<ObjectLabel>().name == targetName || target.GetComponent<ObjectLabel>().name.Equals(targetName))
+                    if (target.GetComponent<ObjectLabel>().name.ToLower() == targetName || target.GetComponent<ObjectLabel>().name.ToLower().Equals(targetName))
                     {
                         currentTarget = target;
                     }
@@ -136,6 +149,11 @@ public class CompanionAbilities : MonoBehaviour {
                     continue;
                 }
                 else if (target.GetComponent<CompanionAbilities>() != null)
+                {
+                    i++;
+                    continue;
+                }
+                else if (target.GetComponent<Stats>().dead)
                 {
                     i++;
                     continue;
@@ -211,15 +229,18 @@ public class CompanionAbilities : MonoBehaviour {
 
     void attackTarget()
     {
-        if (!lineOfSight(currentTarget.transform) && attackDistance < Vector3.Distance(this.transform.position, currentTarget.transform.position))
+        if (!dead)
         {
-            agent.SetDestination(currentTarget.transform.position);
-            agent.isStopped = false;
-        }
-        else
-        {
-            lookAtPlayer(currentTarget.transform);
-            shootPlayer(currentTarget.transform);
+            if (!lineOfSight(currentTarget.transform) && attackDistance < Vector3.Distance(this.transform.position, currentTarget.transform.position))
+            {
+                agent.SetDestination(currentTarget.transform.position);
+                agent.isStopped = false;
+            }
+            else
+            {
+                lookAtPlayer(currentTarget.transform);
+                shootPlayer(currentTarget.transform);
+            }
         }
     }
 

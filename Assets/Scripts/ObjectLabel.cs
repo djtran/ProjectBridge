@@ -20,4 +20,9 @@ public class ObjectLabel : MonoBehaviour {
 	void Update () {
 		label.transform.SetPositionAndRotation(transform.position + Vector3.up * upDistance, Quaternion.Euler(30.0f, 0.0f, 0.0f));
 	}
+
+    public void setDead()
+    {
+        label.GetComponent<TextMesh>().text = name + " (Dead)";
+    }
 }

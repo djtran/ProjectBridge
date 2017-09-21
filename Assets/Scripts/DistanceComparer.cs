@@ -13,14 +13,8 @@ public class DistanceComparer : IComparer {
         float distance1 = Vector3.Distance(originator.transform.position, first.transform.position);
         float distance2 = Vector3.Distance(originator.transform.position, second.transform.position);
 
-        if(first.GetComponent<Stats>().dead)
-        {
-            distance1 += 1000.0f;
-        }
-        if(second.GetComponent<Stats>().dead)
-        {
-            distance2 += 1000.0f;
-        }
+        distance1 += addDeadDistance(first);
+        distance2 += addDeadDistance(second);
 
         if(distance1 > distance2)
         {
@@ -34,5 +28,18 @@ public class DistanceComparer : IComparer {
         {
             return 0;
         }
+    }
+
+    private float addDeadDistance(GameObject obj)
+    {
+        Stats st = obj.GetComponent<Stats>();
+        if (st != null)
+        {
+            if(st.dead)
+            {
+                return 1000.0f;
+            }
+        }
+        return 0;
     }
 }

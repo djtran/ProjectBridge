@@ -9,6 +9,7 @@ public class AIStateMachine : MonoBehaviour {
     public float attackDistance;
     public Transform fpsTarget;
     public Vector3 gunOffset;
+    public bool dead = false;
 
     float slerpModifier = 6.0f;
     Rigidbody AIBody;
@@ -23,7 +24,14 @@ public class AIStateMachine : MonoBehaviour {
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if (fpsTarget == null) {
+        if (dead)
+        {
+            this.enabled = false;
+            Debug.Log("Dead AI");
+            return;
+        }
+
+        if (fpsTarget == null) {
 			return;
 		}
 

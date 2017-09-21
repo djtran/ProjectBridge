@@ -9,6 +9,7 @@ public class Stats : MonoBehaviour {
     public float healthMax = 10.0f;
     public float recover1HPCooldown = 2.5f;
     public bool dead = false;
+    public float upDistance = 1.0f;
 
     private GameObject healthbar;
     private float health;
@@ -23,7 +24,7 @@ public class Stats : MonoBehaviour {
     private void Update()
     {
 
-        healthbar.transform.SetPositionAndRotation(this.transform.position + Vector3.up, Quaternion.Euler(30.0f, 0.0f, 0.0f));
+        healthbar.transform.SetPositionAndRotation(this.transform.position + Vector3.up*upDistance, Quaternion.Euler(30.0f, 0.0f, 0.0f));
     }
 
     public void anyDamage(float damage)
@@ -34,10 +35,11 @@ public class Stats : MonoBehaviour {
 
         if (health == 0.0f)
         {
+            GetComponent<ObjectLabel>().setDead();
             dead = true;
-            this.gameObject.GetComponent<AIStateMachine>().enabled = false;
-            this.gameObject.GetComponent<PlayerController>().enabled = false;
-            this.gameObject.GetComponent<CompanionAbilities>().enabled = false;
+            GetComponent<AIStateMachine>().dead = true;
+            GetComponent<PlayerController>().dead = true;
+            GetComponent<CompanionAbilities>().dead = true;
         }
     }
 
