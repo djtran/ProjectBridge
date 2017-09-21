@@ -7,6 +7,7 @@ public class BossAI : MonoBehaviour {
 	public float fpsTargetDistance;
 	public float enemyLookDistance;
 	public float attackDistance;
+    public bool dead;
 	public Transform fpsTarget;
 	public Vector3 gunOffset;
 
@@ -27,23 +28,26 @@ public class BossAI : MonoBehaviour {
 		if (fpsTarget == null) {
 			return;
 		}
-		fpsTargetDistance = Vector3.Distance(fpsTarget.position, transform.position);
-		if (fpsTargetDistance < enemyLookDistance)
-		{
-			if(fpsTargetDistance > attackDistance)
-			{
-				//I see you, but not firing yet
-				//AIRender.material.color = Color.yellow;
-				//show "Kill" label
-			}
-			else
-			{
-				shootPlayer();
-			}
+        if (!dead)
+        {
+		    fpsTargetDistance = Vector3.Distance(fpsTarget.position, transform.position);
+		    if (fpsTargetDistance < enemyLookDistance)
+		    {
+			    if(fpsTargetDistance > attackDistance)
+			    {
+				    //I see you, but not firing yet
+				    //AIRender.material.color = Color.yellow;
+				    //show "Kill" label
+			    }
+			    else
+			    {
+				    shootPlayer();
+			    }
 			lookAtPlayer();
+            }
 
-		}
-	}
+        }
+    }
 
 	void lookAtPlayer()
 	{

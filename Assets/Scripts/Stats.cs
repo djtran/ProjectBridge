@@ -37,9 +37,23 @@ public class Stats : MonoBehaviour {
         {
             GetComponent<ObjectLabel>().setDead();
             dead = true;
-            GetComponent<AIStateMachine>().dead = true;
-            GetComponent<PlayerController>().dead = true;
-            GetComponent<CompanionAbilities>().dead = true;
+
+            if (GetComponent<AIStateMachine>())
+            {
+                GetComponent<AIStateMachine>().dead = true;
+            }
+            else if (GetComponent<PlayerController>())
+            {
+                GetComponent<PlayerController>().dead = true;
+            }
+            else if (GetComponent<CompanionAbilities>())
+            {
+                GetComponent<CompanionAbilities>().dead = true;
+            }
+            else if (GetComponent<BossAI>())
+            {
+                GetComponent<BossAI>().dead = true;
+            }
         }
     }
 

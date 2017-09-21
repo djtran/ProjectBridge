@@ -9,11 +9,17 @@ public class AISphereCollider : MonoBehaviour
 	}
 
 	void OnTriggerEnter(Collider other) {
-		if (other.gameObject.tag == "Player") {
-			transform.parent.gameObject.GetComponent<AIStateMachine>().fpsTarget = other.transform;
-			transform.parent.gameObject.GetComponent<BossAI>().fpsTarget = other.transform;
-			Debug.Log ("Entered");
-		}
+        if (other.gameObject.tag == "Player")
+        {
+            if (transform.parent.gameObject.GetComponent<AIStateMachine>() != null)
+            {
+                transform.parent.gameObject.GetComponent<AIStateMachine>().fpsTarget = other.transform;
+            }
+            else
+            {
+                transform.parent.gameObject.GetComponent<BossAI>().fpsTarget = other.transform;
+            }
+        }
 			
 	}
 }
