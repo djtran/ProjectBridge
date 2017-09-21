@@ -71,6 +71,26 @@ function handleSessionEndRequest(callback) {
     callback({}, buildSpeechletResponse(cardTitle, speechOutput, null, shouldEndSession));
 }
 
+function sendSQSMessage(message) {
+    var ts = Math.round((new Date()).getTime() / 1000);
+
+    var params = {
+        MessageBody: message,
+        MessageGroupId: "1",
+        MessageDeduplicationId: ts.toString(),
+        QueueUrl: queueURL,
+        DelaySeconds: 0
+    };
+
+    sqs.sendMessage(params, function(err, data) {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log(data);
+        }
+    });
+}
+
 /**
  * Sets the color in the session and prepares the speech to reply to the user.
  */
@@ -86,6 +106,8 @@ function advance(intent, session, callback) {
         const botName = botNameSlot.value;
         speechOutput = botName + ' is now advancing.'
         repromptText = "Test Reprompt";
+
+        sendSQSMessage(botName + " advance");
     } else {
         speechOutput = "I don't recognize that bot name";
         repromptText = "Test Reprompt"
@@ -110,6 +132,8 @@ function fire(intent, session, callback) {
             const target = targetSlot.value;
             speechOutput = botName + ' is now firing at ' + target
             repromptText = "Test Reprompt";
+
+            sendSQSMessage(botName + " fire " + target);
         } else {
             speechOutput = "I don't recognize that target";
             repromptText = "Test Reprompt"
@@ -136,23 +160,7 @@ function takeCover(intent, session, callback) {
         speechOutput = botName + ' is now taking cover.'
         repromptText = "Test Reprompt";
 
-        var ts = Math.round((new Date()).getTime() / 1000);
-
-        var params = {
-            MessageBody: "Best Game" + botName,
-            MessageGroupId: "1",
-            MessageDeduplicationId: ts.toString(),
-            QueueUrl: queueURL,
-            DelaySeconds: 0
-        };
-
-        sqs.sendMessage(params, function(err, data) {
-            if (err) {
-                console.log(err);
-            } else {
-                console.log(data);
-            }
-        });
+        sendSQSMessage(botName + " takeCover");
 
     } else {
         speechOutput = "I don't recognize that bot name";
