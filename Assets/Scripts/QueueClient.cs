@@ -50,7 +50,7 @@ public class QueueClient : MonoBehaviour {
 
                                 foreach (var companion in companions)
                                 {
-                                    if(companion.gameObject.GetComponent<ObjectLabel>().name == command[0])
+                                    if(command[0] == "all" || companion.gameObject.GetComponent<ObjectLabel>().name == command[0])
                                     {
                                         companion.receiveCommand(m.Body);
                                     }
