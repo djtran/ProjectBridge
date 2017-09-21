@@ -27,7 +27,7 @@ public class QueueClient : MonoBehaviour {
 
 		SqsClient = new AmazonSQSClient (access_key.InnerText, secret_key.InnerText, RegionEndpoint.USEast1);
 
-		StartCoroutine (listenForMessages(.5f));
+		StartCoroutine (listenForMessages(.1f));
 	}
 		
 
@@ -45,6 +45,8 @@ public class QueueClient : MonoBehaviour {
 								Debug.Log(@"Message Id  = " + m.MessageId);
 								Debug.Log(@"Message = " + m.Body);
 
+								string command = m.Body.Substring(m.Body.IndexOf(' ') + 1);
+								CompanionAbilities._instances[0].receiveCommand(command);
 								//Deleting Message 
 								deleteMessage(m.ReceiptHandle);
 							});

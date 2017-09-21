@@ -58,6 +58,7 @@ public class CompanionAbilities : MonoBehaviour {
 
     public void receiveCommand(string command)
     {
+		Debug.Log ("Command Received!: " + command);
         string[] commandList = command.Split(' ');
         targetName = null;
 
@@ -66,10 +67,10 @@ public class CompanionAbilities : MonoBehaviour {
             case "advance":
                 state = 1;
                 break;
-            case "retreat":
+            case "takeCover":
                 state = 2;
                 break;
-            case "focus":
+            case "fire":
                 state = 3;
                 targetName = commandList[1];
                 break;
@@ -128,6 +129,7 @@ public class CompanionAbilities : MonoBehaviour {
 
     void advance()
     {
+		Debug.Log ("Advancing");
         if (currentTarget != null)
         {
             if (attackDistance > Vector3.Distance(this.transform.position, currentTarget.position))
