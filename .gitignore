@@ -24,8 +24,8 @@ ExportedObj/
 *.pdb
 
 # Unity3D generated meta files
-*.pidb.meta
-*.meta
+# *.pidb.meta
+# *.meta  # Uncommented because we want to push textures and such
 # Unity3D Generated File On Crash Reports
 sysinfo.txt
 
